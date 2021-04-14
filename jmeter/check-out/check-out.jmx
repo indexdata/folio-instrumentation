@@ -30,7 +30,7 @@
           </elementProp>
           <elementProp name="duration" elementType="Argument">
             <stringProp name="Argument.name">duration</stringProp>
-            <stringProp name="Argument.value">${__P(DURATION,10)}</stringProp>
+            <stringProp name="Argument.value">${__P(DURATION,300)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="thinktime_offset" elementType="Argument">
