@@ -233,5 +233,6 @@ properties are as shown above.
 
 Default itemQuery: ((barcode="" NOT barcode=="") AND status.name=="Available")
 Default userQuery: ((barcode="" NOT barcode=="") AND active=true)
+Default servicePointQuery: `(cql.allRecords=1)`
 EOF
 }

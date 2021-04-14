@@ -56,11 +56,14 @@ The config file is a simple JSON file using the following format:
   "itemCount": 100000,
   "userQuery": "[CQL query to retrieve users, optional]",
   "userCount": 10000,
-  "servicePointsQuery": "[CQL query to retrieve service points, optional]"
+  "servicePointQuery": "[CQL query to retrieve service points, optional]"
 }
 ```
 
 The `okapi`, `tenant`, `user`, and `password` properties are required. The other properties are optional. Any CQL queries are ANDed to the default queries (see below). The defaults for other optional properties are as shown above.
 
 Default itemQuery: `((barcode="" NOT barcode=="") AND status.name=="Available")`
+
 Default userQuery: `((barcode="" NOT barcode=="") AND active=true)`
+
+Default servicePointQuery: `(cql.allRecords=1)`
