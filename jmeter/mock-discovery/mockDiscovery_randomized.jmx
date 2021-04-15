@@ -16,7 +16,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="global_vusers" elementType="Argument">
             <stringProp name="Argument.name">global_vusers</stringProp>
-            <stringProp name="Argument.value">${__P(VUSERS,5)}</stringProp>
+            <stringProp name="Argument.value">${__P(VUSERS,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="global_rampup" elementType="Argument">
@@ -26,7 +26,7 @@
           </elementProp>
           <elementProp name="duration" elementType="Argument">
             <stringProp name="Argument.name">duration</stringProp>
-            <stringProp name="Argument.value">${__P(DURATION,30)}</stringProp>
+            <stringProp name="Argument.value">${__P(DURATION,300)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="resultset_size" elementType="Argument">
