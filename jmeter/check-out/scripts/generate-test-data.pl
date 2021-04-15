@@ -1,4 +1,4 @@
-#!/usr/env/perl
+#!/usr/bin/env perl
 
 # Query a running FOLIO instance to generate appropriate test data
 
