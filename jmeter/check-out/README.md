@@ -5,6 +5,7 @@ This test exercises a FOLIO backend system by performing the API calls used by t
 ## Test notes
 
 * The test emulates a FOLIO user logging in, then performing a sequence of check outs until the test time expires. At various points in the test, a random delay is introduced to emulate what might be typical pauses in the workflow.
+* If the barcodes in the `available.csv` file (see [Test data](#test-data) below) are exhausted before test time expires, the test will end.
 * The test is targeted at a Honeysuckle FOLIO environment.
 
 ## Test data

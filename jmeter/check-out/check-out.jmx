@@ -136,7 +136,7 @@
             <stringProp name="filename">${global_BaseDir}/jmeter-supported-data/available.csv</stringProp>
             <boolProp name="ignoreFirstLine">false</boolProp>
             <boolProp name="quotedData">false</boolProp>
-            <boolProp name="recycle">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
             <stringProp name="shareMode">shareMode.all</stringProp>
             <boolProp name="stopThread">true</boolProp>
             <stringProp name="variableNames">item_barcode_availiable</stringProp>
