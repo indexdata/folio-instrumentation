@@ -48,19 +48,27 @@ if ($@) {
   exit 1;
 }
 
+# Default CQL queries
+my $item_query = '(barcode="" NOT barcode=="")';
+my $item_count = 100000;
+my $sp_query = '(cql.allRecords=1)';
+
 # Configuration variables
 my $okapi = $$config{okapi};
 my $user = $$config{user};
 my $pw = $$config{password};
 my $tenant = $$config{tenant};
-my $item_query = $$config{itemQuery}; # CQL query to search for items
-my $item_count = $$config{itemCount}?$$config{itemCount}:100000; # number of item barcodes to put in the test data
-my $user_query = $$config{userQuery}; # CQL query to search for users
-my $user_count = $$config{userCount}?$$config{userCount}:10000; # number of user barcodes to put in the test data
-my $sp_query = $$config{servicePointQuery}; # CQL query to search for service points
+if ($$config{itemQuery}) {
+  $item_query .= "AND ($$config{itemQuery})";
+}
+if ($$config{itemCount}) {
+  $item_count = $$config{itemCount};
+}
+if ($$config{servicePointQuery}) {
+  $sp_query .= "AND ($$config{servicePointQuery})";
+}
 my $credentials_file = "$output_dir/credentials.csv";
-my $available_file = "$output_dir/available.csv";
-my $user_barcodes_file = "$output_dir/user_barcodes.csv";
+my $cki_file = "$output_dir/item_barcodes.csv";
 my $sp_file = "$output_dir/service_point.csv";
 unless ($okapi && $user && $pw && $tenant) {
   warn "Missing required config property\n";
@@ -108,13 +116,8 @@ print "Wrote credentials to $credentials_file\n";
 
 # Build item barcode list
 print "Building item barcode list...";
-my $item_barcode_count = build_barcode_list('item-storage/items','((barcode="" NOT barcode=="") AND status.name=="Available")',$item_query,$item_count,$available_file);
-print "wrote $item_barcode_count barcodes to $available_file\n";
-
-# Build user barcode list
-print "Building user barcode list...";
-my $user_barcode_count = build_barcode_list('users','((barcode="" NOT barcode=="") AND active=true)',$user_query,$user_count,$user_barcodes_file);
-print "wrote $user_barcode_count barcodes to $user_barcodes_file\n";
+my $item_barcode_count = build_barcode_list('item-storage/items',$item_query,$item_count,$cki_file);
+print "wrote $item_barcode_count barcodes to $cki_file\n";
 
 # Build service points list
 print "Building service points list...";
@@ -141,13 +144,10 @@ print "$sp_cnt service points written to $sp_file\n";
 exit;
 
 sub build_barcode_list {
-  my ($api,$working_query,$user_query,$barcode_count,$outfile,$limit) = @_;
+  my ($api,$query,$barcode_count,$outfile,$limit) = @_;
   $limit = 2147483647 unless $limit;
-  if ($user_query) {
-    $working_query .= " AND ($user_query)";
-  }
-  $working_query = uri_escape($working_query);
-  $req = HTTP::Request->new('GET',"$okapi/$api?query=$working_query&limit=$limit",$header);
+  $query = uri_escape($query);
+  $req = HTTP::Request->new('GET',"$okapi/$api?query=$query&limit=$limit",$header);
   my @all_barcodes;
   # This is not perfect, but it gets us most of the barcodes without loading everything into memory
   # barcodes split across chunks will get dropped
@@ -195,10 +195,10 @@ Usage:
 perl generate-test-data.pl [--help] --config <config file> [output directory]
 
 The script will generate test data in the output directory. Item
-barcodes in the file "available.csv", user barcodes in
-"user_barcodes.csv", service points in "service_point.csv", and Okapi
-connection parameters in "credentials.csv". Files with those names in
-the output directory will be overwritten.
+barcodes in the file "item_barcodes.csv" service points in
+"service_point.csv", and Okapi connection parameters in
+"credentials.csv". Files with those names in the output directory will
+be overwritten.
 
 Note that the barcode parsing routine is not perfect and will not
 necessarily pick up all barcodes, depending on how the server chunks
@@ -221,8 +221,6 @@ The config file is a simple JSON file using the following format:
   "password": "[FOLIO password]",
   "itemQuery": "[CQL query to retrieve items, optional]",
   "itemCount": 100000,
-  "userQuery": "[CQL query to retrieve users, optional]",
-  "userCount": 10000,
   "servicePointQuery": "[CQL query to retrieve service points, optional]"
 }
 
@@ -231,8 +229,10 @@ other properties are optional. Any CQL queries are ANDed to the
 default queries (see below). The defaults for other optional
 properties are as shown above.
 
-Default itemQuery: ((barcode="" NOT barcode=="") AND status.name=="Available")
-Default userQuery: ((barcode="" NOT barcode=="") AND active=true)
-Default servicePointQuery: `(cql.allRecords=1)`
+Default itemQuery: (barcode="" NOT barcode=="")
+Default servicePointQuery: (cql.allRecords=1)
+
+To limit the test data to items that are checked out, use
+status.name=="Checked out" as the itemQuery.
 EOF
 }
