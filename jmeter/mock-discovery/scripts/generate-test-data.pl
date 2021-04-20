@@ -105,7 +105,7 @@ unless ($okapi_port) {
 }
 open(my $out,'>',$credentials_file)
   or die "Can't open $credentials_file: $!\n";
-print $out join(',',($tenant,$user,$pw,$okapi_protocol,$okapi_host,$okapi_port,)) . "\n";
+print $out join(',',($tenant,$user,$pw,$okapi_protocol,$okapi_host,$okapi_port)) . "\n";
 close($out);
 print "Wrote credentials to $credentials_file\n";
 
