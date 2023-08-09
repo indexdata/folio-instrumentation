@@ -51,6 +51,7 @@ if ($@) {
 # Default CQL queries
 my $instance_query = '(cql.allRecords=1)';
 my $instance_count = 100000;
+my $instance_set = 2147483647;
 
 # Configuration variables
 my $okapi = $$config{okapi};
@@ -62,6 +63,9 @@ if ($$config{instanceQuery}) {
 }
 if ($$config{instanceCount}) {
   $instance_count = $$config{instanceCount};
+}
+if ($$config{instanceSet}) {
+  $instance_set = $$config{instanceSet};
 }
 my $credentials_file = "$output_dir/config_random.csv";
 my $instance_file = "$output_dir/instances.csv";
@@ -111,14 +115,13 @@ print "Wrote credentials to $credentials_file\n";
 
 # Build instance HRID list
 print "Building instance HRID list...";
-my $instance_hrid_count = build_hrid_list('instance-storage/instances',$instance_query,$instance_count,$instance_file);
+my $instance_hrid_count = build_hrid_list('instance-storage/instances',$instance_query,$instance_count,$instance_file,$instance_set);
 print "wrote $instance_hrid_count HRIDs to $instance_file\n";
 
 exit;
 
 sub build_hrid_list {
   my ($api,$query,$hrid_count,$outfile,$limit) = @_;
-  $limit = 2147483647 unless $limit;
   $query = uri_escape($query);
   $req = HTTP::Request->new('GET',"$okapi/$api?query=$query&limit=$limit",$header);
   my @all_hrids;
@@ -192,14 +195,25 @@ The config file is a simple JSON file using the following format:
   "user": "[FOLIO username]",
   "password": "[FOLIO password]",
   "instanceQuery": "[CQL query to retrieve items, optional]",
-  "instanceCount": 100000
+  "instanceCount": 100000,
+  "instanceSet": 2147483647
 }
 
-The okapi, tenant, user, and password properties are required. The
-other properties are optional. Any CQL queries are ANDed to the
-default queries (see below). The defaults for other optional
-properties are as shown above.
+The okapi, tenant, user, and password properties are required and
+probably self-explanatory. The other properties are optional.
 
-Default instanceQuery: (cql.allRecords=1)
+instanceQuery: Value should be a CQL query. It will be ANDed to the
+default query "(cql.allRecords=1)".
+
+instanceCount: The number of instances IDs to save in the
+instances.csv file (default 100000).
+
+instanceSet: The number of instances in the set retrieved from FOLIO,
+which is used to randomly select instance IDs for the instances.csv
+file. Default is 2147483647 (or all instances). Setting this to a
+lower number will allow the script to generate the file more quickly
+and using less memory, but it decreases the randomness of the test
+(since only the first instanceSet instances returned by FOLIO will be
+considered).
 EOF
 }
