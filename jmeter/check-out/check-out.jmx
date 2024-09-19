@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.5">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="CheckOut" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -230,13 +230,13 @@
             <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor - okapi-token" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">true</stringProp>
               <stringProp name="RegexExtractor.refname">okapi-token</stringProp>
-              <stringProp name="RegexExtractor.regex">x-okapi-token: (.*)</stringProp>
+              <stringProp name="RegexExtractor.regex">(?i)x-okapi-token: (.*)</stringProp>
               <stringProp name="RegexExtractor.template">$1$</stringProp>
               <stringProp name="RegexExtractor.default"></stringProp>
               <stringProp name="RegexExtractor.match_number">1</stringProp>
             </RegexExtractor>
             <hashTree/>
-            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor - current_userID" enabled="true">
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor - current_userID" enabled="false">
               <stringProp name="JSONPostProcessor.referenceNames">current_userID</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.user.id</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
